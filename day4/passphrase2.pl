@@ -13,17 +13,22 @@ sub getValidPassphrases {
     my $totalValid = 0;
     while ( my $passphraseRow = <$passphraseFile> ) {
         chomp $passphraseRow;
-        my @passphraseRowList = map { sort $_ } split( ' ', $passphraseRow );
+        my @passphraseRowList = split( ' ', $passphraseRow );
+        my @sortedPassphraseRowList;
+        foreach my $passphrase (@passphraseRowList) {
+            unshift @sortedPassphraseRowList, $passphrase;
+        }
+
         my @current;
         my @prev;
         my $valid = 1;
-        foreach ( sort @passphraseRowList ) {
-            @current = split '', $_;
+        foreach ( sort @sortedPassphraseRowList ) {
+            @current = sort( split '', $_ );
             if ( @current ~~ @prev ) {
                 $valid = 0;
                 last;
             }
-            @prev = split '', $_;
+            @prev = sort( split '', $_ );
         }
 
         # say "$passphraseRow: VALID" if $valid;
